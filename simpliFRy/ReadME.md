@@ -121,14 +121,14 @@ Instead, here are a list of API endpoints that frontend services and other backe
     ```json
     {
       "stream": true,
-      "message": "Success!",
+      "message": "Success!"
     }
     ```
   - Body when stream already started:
     ```json
     {
       "stream": false,
-      "message": "Stream already started!",
+      "message": "Stream already started!"
     }
     ```
 
@@ -141,7 +141,7 @@ Instead, here are a list of API endpoints that frontend services and other backe
 - **Response**:
   - Status: `200 OK`
   - Body if started (string): "Yes"
-  - Body if not started (string): "No"  
+  - Body if not started (string): "No"
 
 #### 3. Access Video Feed
 
@@ -154,9 +154,10 @@ Instead, here are a list of API endpoints that frontend services and other backe
   - Mimetype: `multipart/x-mixed-replace; boundary=frame`
 
 To access the video stream, create an `<object>` element in HTML, set its `type` attribute to `image/jpeg` and `data` attribute to `/vidFeed`.
+
 ```html
-<object type='image/jpeg' data='/vidFeed'></object>
-``` 
+<object type="image/jpeg" data="/vidFeed"></object>
+```
 
 #### 4. Access FR Results
 
@@ -171,13 +172,15 @@ To access the video stream, create an `<object>` element in HTML, set its `type`
     ```json
     {
       "data": [
-        { // For individuals whose faces are currently on the video feed
-            "bbox": [0.2, 0.1, 0.4, 0.3], // Bounding box in x1, y1, x2, y2 format (left top right bottom)
-            "label": "John Doe", // Individual's name
-            "score": 0.60 // Similarity score
+        {
+          // For individuals whose faces are currently on the video feed
+          "bbox": [0.2, 0.1, 0.4, 0.3], // Bounding box in x1, y1, x2, y2 format (left top right bottom)
+          "label": "John Doe", // Individual's name
+          "score": 0.6 // Similarity score
         },
-        { // For individuals whose faces were recently on the video feed
-            "label": "Jane Smith"
+        {
+          // For individuals whose faces were recently on the video feed
+          "label": "Jane Smith"
         }
       ]
     }
@@ -201,7 +204,7 @@ To parse the data, refer to `static/js/detections.js` in the `processStream` fun
   - `threshold_lenient_pers` (float, optional)
 - **Response**:
   - Status: `200 OK`
-  - Redirects to `/settings` page 
+  - Redirects to `/settings` page
 
 Hopefully, this makes simpliFRy far more versatile as other simple highly-specialised apps can be created to interact with it depending on the requirements of the user. (It is also because it takes too much work to build an app with a lot of customisable features.)
 
@@ -211,14 +214,55 @@ Hopefully, this makes simpliFRy far more versatile as other simple highly-specia
 
 ### Prerequisites
 
-- Software or tools needed (e.g., Node.js, Python, Docker, etc.)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) (for GPU usage within docker container, which is very recommended; install via WSL)
 
-### Step-by-Step Guide
+### Installation via Docker
 
 1. Clone the repository:
+
    ```bash
-   git clone https://github.com/your-username/your-repository-name.git
+   git clone https://github.com/CJBuzz/Real-time-FRS-2.0.git
    ```
+
+2. Navigate to simpliFRy directory
+
+   ```bash
+   cd simpliFRy
+   ```
+
+3. Build Docker Image
+   ```bash
+   docker compose build
+   ```
+
+### Installation by other means
+
+It is highly recommended to install and run simpliFRy via Docker, else there is a need to install dependencies such as CUDA and cuDNN separately. It is quite troublesome to achieve version compatibility for CUDA, cuDNN, pyTorch and onnxruntime. However, if you insist on refusing to use Docker, below are the versions that worked for me.
+- CUDA 11.8
+- cuDNN 8.9.2.26
+- pyTorch 2.1.2+cu118
+- onnxruntime 1.18.1
+
+In addition, if you are using windows, there is a need to install CMake and Microsoft Visual Studio C++ built tools separately.
+
+Afterwards, you can create a virtual environment in the `simpliFRy` directory
+
+```bash
+py -m venv venv
+```
+
+Activate it
+
+```bash
+venv\Scripts\activate # on windows, use source venv/bin/activate for linux and macOS
+```
+
+Install the requirements with pip
+
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
