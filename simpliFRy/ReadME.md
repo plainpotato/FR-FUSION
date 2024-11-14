@@ -195,9 +195,9 @@ To parse the data, refer to `static/js/detections.js` in the `processStream` fun
   - `holding_time` (float, optional)
   - `use_differentiator` (bool, optional)
   - `similarity_gap` (float, optional)
-  - `use_persistor` (float, optional)
+  - `use_persistor` (bool, optional)
   - `threshold_prev` (float, optional)
-  - `threshold_iou` (bool, optional)
+  - `threshold_iou` (float, optional)
   - `threshold_lenient_pers` (float, optional)
 - **Response**:
   - Status: `200 OK`
