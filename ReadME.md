@@ -61,7 +61,7 @@ For more information on installation, refer to the following:
 
 ## License 
 
-This project is licensed under the MIT License - see the [LICENSE.md]() file for details.
+This project is licensed under the Apache License 2.0 - see the [LICENSE.md](https://github.com/CJBuzz/Real-time-FRS-2.0/blob/main/LICENSE) file for details.
 
 ---
 
