@@ -21,7 +21,7 @@ SimpliFRy's facial recognition algorithm works as follows:
 2. An query image is passed to the insightface model, which detects the image for human faces and represents them as an <ins>embedding</ins> (a list of numbers). Let us call these faces 'query faces' and their respective embeddings 'query embeddings'.
 3. A K-Nearest Neighbour search is conducted on each of those query embeddings using voyager, a vector index that is loaded with the embedding representation of a database of faces.
 4. The closest embedding is found, and its <ins>similarity score</ins> with the query embedding is retrieved (**the similarity metric used is cosine similarity, so the lower the number, the closer the match**).
-5. If the similarity score is <ins>above</ins> a given threshold (cosine distance further than threshold), the face from which the query embedding is derived (query face) is considered an <ins>unknown face</ins>. If the score is <ins>below</ins> the threshold, the query face will be labelled as the <ins>person whose face produced the closest matching embedding</ins>.
+5. If the closest similarity score is <ins>above</ins> a given threshold (cosine distance further than threshold), the face from which the query embedding is derived (query face) is considered an <ins>unknown face</ins>. If the score is <ins>below</ins> the threshold, the query face will be labelled as the <ins>person whose face produced the closest matching embedding</ins>.
 
 ---
 
@@ -42,13 +42,13 @@ Returning to the key question of this section, I added 2 small modifications to 
 The differentiator mechanic was conceived from 3 observations.
 
 1. A sufficiently low (strict) threshold that eliminates almost all false positives will result in a less than ideal detection rate.
-2. False detections (incorrectly labelling a person as someone else) generally occurs when the similarity score of the wrong face is marginally lower than the similarity score of the correct face, and this tends to occur only with lenient (high) score.
-3. When the FR Algorithm fails to pick up someone whose face is in its database, there is a good chance that the face it should have picked up (correct individual) has a much lower similarity score (closer match) than the next closest face (someone else). This is especially true for smaller datasets of faces.
+2. False detections (incorrectly labelling a person as someone else) generally occurs when the closest similarity score of the wrong face is marginally lower than that of the correct face, and this tends to occur only with lenient (high) score.
+3. When the FR Algorithm fails to pick up someone whose face is in its database, there is a good chance that the face it should have picked up (correct individual) has a much lower closest similarity score (closer match) than the next closest face (someone else). This is especially true for smaller datasets of faces.
 
 These provide 2 implications.
 
-1. The first 2 observations imply that when the 2 closest embeddings have close similarity scores with each other, it is preferable to have a _stricter_ threshold.
-2. Observations 1 and 3 imply that when the closest embeddings is significantly more similar to the query embedding than the next closest embedding, it is preferable to have a _more lenient_ threshold.
+1. The first 2 observations imply that when the 2 closest similarity scores have a small difference, it is preferable to have a _stricter_ threshold.
+2. Observations 1 and 3 imply that when the closest embeddings is significantly more similar to the query embedding than the next closest embedding (large difference in 2 closest similarity scores), it is preferable to have a _more lenient_ threshold.
 
 The differentiator mechanic does exactly that. Instead of just fetching the closest embedding in step 4, it retrieves the 2 closest embeddings and their similarity scores. It then compares their similarity scores. If the <ins>difference in similarity scores</ins> of the 2 closest embedding is greater than a **_Similarity Gap_**, a **_Lenient Threshold_** will be used. If the difference is less than the similarity gap, the original, stricter threshold will be used.
 
@@ -71,7 +71,7 @@ The persistor mechanic comes into play by making use of the following:
 Therefore, the mechanic works as follows:
 
 1. Upon successful detection of an individual, the his/her query embeddings are updated and maintained in a dictionary for up to the duration of the **_Holding Time_**.
-2. If a query face fails to be detected, its embedding will be compared to those stored in the dictionary. To consider the face as 'detected', it must fulfil 3 conditions: the position of the query face and that of the face in the persistor dictionary must be in roughly the same position (**_IOU Threshold_**) **AND** the similarity, as measured using cosine distance, between query embedding and the embedding in the persistor dictionary (which are previous query embeddings) must below **_Persistor Threshold_** (which is very strict) **AND** the query embedding's similarity score with corresponding embedding in the database must meet a separate **_Lenient Threshold_** (different from the Lenient Threshold of the differentiator).
+2. If a query face fails to be detected, its embedding will be compared to those stored in the dictionary. To consider the face as 'detected', it must fulfil 3 conditions: the position of the query face and that of the face in the persistor dictionary must be in roughly the same position (**_IOU Threshold_**) **AND** the similarity, as measured using cosine distance, between query embedding and the embedding in the persistor dictionary (which are previous query embeddings) must below **_Persistor Threshold_** (which is very strict) **AND** the query embedding's similarity score with the corresponding embedding in the database must meet a separate **_Lenient Threshold_** (different from the Lenient Threshold of the differentiator).
 3. Should the query face be detected as a result of the persistor mechanic, its query embedding will be updated in the dictionary and replace the previous query embedding.
 
 Notes
@@ -99,6 +99,127 @@ Hopefully, this makes simpliFRy far more versatile as other simple highly-specia
 
 ## FR Settings
 
+SimpliFRy's facial recognition algorithm has a few parameters that can be adjusted to change the detection rate. This section will explain what each of them does.
+
+You can tweak these settings by submitting the form in the `/submit` endpoint. 
+
+#### FR Threshold
+
+**Facial Recognition Threshold** is the maximum distance between 2 embeddings for them to be close enough to be considered as representations of the same face.
+
+The closest similarity score of a query embedding (or face) is compared against this number. If the score is greater than this number, it means that the query face is unknown (distance too large). If the score is smaller, the face will be recognised.
+
+- **Settings Key**: `threshold`
+- **Default Value**: 0.45
+- **Minimum**: 0.30
+- **Maximum**: 0.90
+- **Step**: 0.01
+
+#### Holding Time
+
+**Holding Time** is the duration after a person is last recognised whereby they would still be considered a recent detection.
+
+A longer holding time would mean an individual would be considered as 'recent detection' for a longer period of time. Their name would be continuously broadcasted in the `/frResults` endpoint without bounding box and closest similarity score until the duration between the current time and the time of last recognition exceeds the holding time.
+
+This affects the persistor mechanic, and the duration their name will also be displayed on the sidebar. Holding time is measured in seconds.
+
+- **Settings Key**: `holding_time`
+- **Default Value**: 15
+- **Minimum**: 1
+- **Maximum**: 120
+- **Step**: 1
+
+### Differentiator Section
+
+The following 3 parameters pertain to the [differentiator mechanic](#modification-1-differentiator)
+
+#### Use Differentiator
+
+Whether to use the differentiator mechanic or not.
+
+- **Settings Key**: `use_differentiator`
+
+#### Lenient Threshold (Differentiator)
+
+**Lenient Threshold** is similar to [**FR Threshold**](#fr-threshold). It is used as a benchmark for query embeddings whose 2 closest similarity scores have a sufficiently large (dependent on Similarity Gap) difference between them. 
+
+If a query embedding's closest similarity score is much lower than the next closest similarity score, it will be compared against the lenient threshold instead of the stricter FR threshold. It will be considered as recognised if the closest similarity score is less than the lenient threshold, and considered unrecognised otherwise.
+
+- **Settings Key**: `threshold_lenient_diff`
+- **Default Value**: 0.55
+- **Minimum**: 0.30
+- **Maximum**: 0.90
+- **Step**: 0.01
+
+This value should be higher (more lenient) than that of FR threshold.
+
+#### Similarity Gap
+
+**SImilarity Gap** is the minimum difference in distance that the 2 closest similarity scores of an embedding must have in order for the closest similarity score to be benchmarked against the **Lenient Threshold** instead of the **FR Threshold**
+
+Increasing the similarity gap forces query embeddings to have a larger difference in their 2 closest similarity scores before being compared to the lenient threshold (in effect the query face must have a clearer favourite amongst the faces in the database). Vice versa when decreasing this value.
+
+- **Settings Key**: `similarity_gap`
+- **Default Value**: 0.10
+- **Minimum**: 0.01
+- **Maximum**: 0.20
+- **Step**: 0.01
+
+### Persistor Section
+
+The following 4 parameters pertain to the [persistor mechanic](#modification-2-persistor). Take note that the persistor mechanic will only take effect after the default FR algorithm and the differentiator mechanic (closest similarity score of query embedding is greater than FR threshold and differentiator lenient threshold).
+
+Other than these parameters, the persistor mechanic is also affected by [**Holding Time**](#holding-time), which determines how long to keep the last embedding of an individual who is considered as recognised.  
+
+#### Use Persistor
+
+Whether to use the persistor mechanic or not.
+
+- **Settings Key**: `use_persistor`
+
+#### Persistor Threshold
+
+**Persistor Threshold** is the maximum distance that a query embedding and the embedding of a recently recognised face can have for the query embedding to be recognised with tne persistor mechanic. 'Recently recognised' is determined by **Holding Time**.
+
+The lower the persistor threshold, the more similar the query embedding and the embedding of the recently detected face must be (stricter). The higher the persistor threshold, the less similar they must be (more lenient).
+
+- **Settings Key**: `threshold_prev`
+- **Default Value**: 0.3
+- **Minimum**: 0.01
+- **Maximum**: 0.60
+- **Step**: 0.01
+
+Persistor threshold should ideally be quite strict as it would be good to ensure that a person detected using this mechanic has a really similar face to one who was detected normally (either by default or differentiator mechanic) previously.
+
+#### IOU Threshold
+
+**IOU Threshold** is the minimum intersection-over-union score that the bounding box of a face must have with the bounding box of the last recognised face of a recently detected individual to be recognised with the persistor mechanic. 'Recently recognised' is determined by **Holding Time**.
+
+Intersection-over-union score is the fraction of the intersection area between 2 bounding boxes (their overlap) out of their union area (their combined area minus their intersection area).
+
+The higher the IOU threshold, the closer in position the bounding boxes must have with each other. Conversely, the lower the threshold, the further apart they are allowed to be.
+
+- **Settings Key**: `threshold_iou`
+- **Default Value**: 0.2
+- **Minimum**: 0.01
+- **Maximum**: 1.00
+- **Step**: 0.01
+
+IOU threshold should ideally be quite lenient (low) as even a lenient IOU threshold enforces a degree of similarity in the positions of the bounding boxes. Too strict an IOU threshold would allow for little movment in the faces of the individual with respect to the camera before the persistor mechanic comes into play, defeating its purpose. 
+
+#### Lenient Threshold (Persistor)
+
+**Lenient Threshold** is similar to [**FR Threshold**](#fr-threshold). In the persistor mechanic, this is used to ensure that a face has at least some semblance to a face in the database. The closest similarity score of a query embedding must thus be below the persistor lenient threshold for it to be recognised.
+
+- **Settings Key**: `threshold_lenient_pers`
+- **Default Value**: 0.60
+- **Minimum**: 0.30
+- **Maximum**: 0.90
+- **Step**: 0.01
+
+This value should be higher (more lenient) than that of FR threshold and the [differentiator lenient threshold](#lenient-threshold-differentiator).
+
+P.S. The exact usefulness of this particular parameter is not fully determined.
 
 ---
 
