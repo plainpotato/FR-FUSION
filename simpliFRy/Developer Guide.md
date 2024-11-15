@@ -97,7 +97,7 @@ Hopefully, this makes simpliFRy far more versatile as other simple highly-specia
 
 ---
 
-## FR Settinsg
+## FR Settings
 
 
 ---
@@ -111,7 +111,7 @@ Hopefully, this makes simpliFRy far more versatile as other simple highly-specia
 - **Description**: Start video broadcast and FR inferencing
 - **Request**: Form Data
   - `stream_src` (string, required): RTSP URL of stream source (e.g. `rtsp://[username:password@]ip_address[:rtsp_port]/server_URL[[?param1=val1[?param2=val2]…[?paramN=valN]]`)
-  - `data_file` (string, optional): Path to JSON file mapping name of individual to images of their faces; path is relative to the `data` [directory](#data-folder), which is volume mounted to the docker container.
+  - `data_file` (string, optional): Path to JSON file mapping name of individual to images of their faces; path is relative to the `data` [directory](ReadME.md#data-folder), which is volume mounted to the docker container.
 - **Response**:
   - Status: `200 OK`
   - Body when stream has not started:
