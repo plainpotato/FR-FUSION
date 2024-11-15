@@ -1,10 +1,3 @@
-# data
-dev-assets/
-faces/
-fusionfaces/
-*.db
-*.whl
-
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
 **/*.py[cod]
@@ -30,3 +23,13 @@ venv/
 
 # Data
 data/
+*.db
+*.whl
+
+# Dev
+dev-assets/
+
+# ReadME
+ReadME.md
+Developer Guide.md
+assets/
