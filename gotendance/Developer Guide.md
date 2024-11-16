@@ -11,9 +11,9 @@
 
 ## Result Stream
 
-**Gotendance** updates its attendance list by listening to a results stream from a separate service. Though intended to work with [**simpliFRy**](../simpliFRy/), gotendance can be used with other services sending a results stream as well. 
+**Gotendance** updates its attendance list by listening to a results stream from a separate service. Though intended to work with [**simpliFRy**](../simpliFRy/)'s `/frResults` endpoint, gotendance can be used with other services sending a results stream as well. 
 
-Below is the format of the results stream, which is given as a ***HTTP Streaming Response***.
+Below is the format of a results stream's JSON output, which is repeatedly given in a ***HTTP Streaming Response***.
 
 ```js
 {
@@ -33,7 +33,7 @@ For more information on the results stream, refer to the `/frResults` endpoint [
 
 ### Generate Result Stream
 
-Flask app example
+Flask app example (with `/resultsStream` as an endpoint):
 
 ```python
 import json
