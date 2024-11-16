@@ -49,11 +49,11 @@ func (store *Store) Check(name string) {
 	record, exists := store.Items[name]
 	if exists {
 		record.Detected = true
-		record.Attendance = true
 		record.LastSeen = currTime
 
 		if record.FirstSeen.IsZero() {
 			record.FirstSeen = currTime
+			record.Attendance = true
 			log.Printf("%s present!", name)
 		}
 
