@@ -15,7 +15,7 @@
 
 ## Description
 
-**Gotendance** is an attendance tracking app to accompany [**simpliFRy**](../simpliFRy/). They can be used together for facial recognition attendance taking. Gotendance is built primarily from the <ins>Go</ing> programming language, and its Web UI is made from <ins>HTML/CSS/JS</ins>. This enables it to be lightweight and easy to deploy. 
+**Gotendance** is an attendance tracking app to accompany [**simpliFRy**](../simpliFRy/). They can be used together for facial recognition attendance taking. Gotendance is built primarily from the <ins>Go</ins> programming language, and its Web UI is made from <ins>HTML/CSS/JS</ins>. This enables it to be lightweight and easy to deploy. 
 
 ---
 

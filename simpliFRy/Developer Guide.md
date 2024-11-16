@@ -287,7 +287,7 @@ To access the video stream, create an `<object>` element in HTML, set its `type`
   - Status: `200 OK`
   - Mimetype: `application/json`
   - Body:
-    ```json
+    ```js
     {
       "data": [
         {

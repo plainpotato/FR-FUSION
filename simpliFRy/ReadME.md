@@ -150,7 +150,7 @@ To conduct facial recognition, you need to load images of people you wish to be 
 
 3. In the `simpliFRy/data` folder, create a JSON file that maps the image file name with the name of the person to be recognised (you can call it anything, such as `personnel.json`). Format it like below.
 
-```json
+```js
 {
   "img_folder_path": "path/to/image/folder",
   "details": [
