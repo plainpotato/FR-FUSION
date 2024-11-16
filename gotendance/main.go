@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"html/template"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -39,7 +39,7 @@ func loadData(store *collator.Store) http.HandlerFunc {
 
 		defer file.Close()
 
-		bytes, err := ioutil.ReadAll(file)
+		bytes, err := io.ReadAll(file)
 		if err != nil {
 			http.Error(w, "Unable to read file", http.StatusInternalServerError)
 			return
@@ -157,7 +157,7 @@ func changeAttendanceHandler(store *collator.Store) http.HandlerFunc {
 }
 
 
-func recordHandler(store *collator.Store) http.HandlerFunc {
+func recordHandler() http.HandlerFunc {
 	return func (w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "templates/records.html")
 	}
@@ -212,7 +212,7 @@ func main() {
 	http.HandleFunc("/fetchAttendance", fetchHandler(store))
 	
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.HandleFunc("/records", enforceGet(recordHandler(store)))
+	http.HandleFunc("/records", enforceGet(recordHandler()))
 	http.HandleFunc("/", enforceGet(homeHandler(streamsList)))
 
 	log.Printf("Starting server on :1500")
