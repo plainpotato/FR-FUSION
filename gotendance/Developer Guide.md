@@ -31,7 +31,40 @@ Below is the format of the results stream, which is given as a ***HTTP Streaming
 
 For more information on the results stream, refer to the `/frResults` endpoint [here](../simpliFRy/Developer%20Guide.md#4-access-fr-results). Take note that gotendance does not need the `bbox` and `score` fields.
 
-To see how this stream is generated, refer to the [simpliFRy code base](../simpliFRy/).
+### Generate Result Stream
+
+Flask app example
+
+```python
+import json
+
+from flask import Flask, Response
+
+app = Flask(__name__)
+
+# data can be a variable that changes continuously
+data = [ 
+    {
+        "label": "John Doe"
+    },
+    {
+        "label": "Jane Smith"
+    }
+]
+
+def broadcast():
+    while True:
+        yield json.dumps({'data': data}) + '\n'
+
+@app.route("/resultsStream")
+def resultsStream():
+    return Response(
+        broadcast(), mimetype="application/json"
+    )
+
+if __name__ == "__main__":
+    app.run()
+```
 
 ---
 
