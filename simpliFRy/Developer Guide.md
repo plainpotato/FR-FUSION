@@ -110,10 +110,10 @@ You can tweak these settings by submitting the form in the `/submit` endpoint.
 The closest similarity score of a query embedding (or face) is compared against this number. If the score is greater than this number, it means that the query face is unknown (distance too large). If the score is smaller, the face will be recognised.
 
 - **Settings Key**: `threshold`
-- **Default Value**: 0.45
-- **Minimum**: 0.30
-- **Maximum**: 0.90
-- **Step**: 0.01
+- **Default Value**: `0.45`
+- **Minimum**: `0.30`
+- **Maximum**: `0.90`
+- **Step**: `0.01`
 
 #### Holding Time
 
@@ -124,10 +124,10 @@ A longer holding time would mean an individual would be considered as 'recent de
 This affects the persistor mechanic, and the duration their name will also be displayed on the sidebar. Holding time is measured in seconds.
 
 - **Settings Key**: `holding_time`
-- **Default Value**: 15
-- **Minimum**: 1
-- **Maximum**: 120
-- **Step**: 1
+- **Default Value**: `15`
+- **Minimum**: `1`
+- **Maximum**: `120`
+- **Step**: `1`
 
 ### Differentiator Section
 
@@ -138,6 +138,7 @@ The following 3 parameters pertain to the [differentiator mechanic](#modificatio
 Whether to use the differentiator mechanic or not.
 
 - **Settings Key**: `use_differentiator`
+- **Default Value**: `True` 
 
 #### Lenient Threshold (Differentiator)
 
@@ -146,10 +147,10 @@ Whether to use the differentiator mechanic or not.
 If a query embedding's closest similarity score is much lower than the next closest similarity score, it will be compared against the lenient threshold instead of the stricter FR threshold. It will be considered as recognised if the closest similarity score is less than the lenient threshold, and considered unrecognised otherwise.
 
 - **Settings Key**: `threshold_lenient_diff`
-- **Default Value**: 0.55
-- **Minimum**: 0.30
-- **Maximum**: 0.90
-- **Step**: 0.01
+- **Default Value**: `0.55`
+- **Minimum**: `0.30`
+- **Maximum**: `0.90`
+- **Step**: `0.01`
 
 This value should be higher (more lenient) than that of FR threshold.
 
@@ -160,10 +161,10 @@ This value should be higher (more lenient) than that of FR threshold.
 Increasing the similarity gap forces query embeddings to have a larger difference in their 2 closest similarity scores before being compared to the lenient threshold (in effect the query face must have a clearer favourite amongst the faces in the database). Vice versa when decreasing this value.
 
 - **Settings Key**: `similarity_gap`
-- **Default Value**: 0.10
-- **Minimum**: 0.01
-- **Maximum**: 0.20
-- **Step**: 0.01
+- **Default Value**: `0.10`
+- **Minimum**: `0.01`
+- **Maximum**: `0.20`
+- **Step**: `0.01`
 
 ### Persistor Section
 
@@ -176,6 +177,7 @@ Other than these parameters, the persistor mechanic is also affected by [**Holdi
 Whether to use the persistor mechanic or not.
 
 - **Settings Key**: `use_persistor`
+- **Default Value**: `True` 
 
 #### Persistor Threshold
 
@@ -184,10 +186,10 @@ Whether to use the persistor mechanic or not.
 The lower the persistor threshold, the more similar the query embedding and the embedding of the recently detected face must be (stricter). The higher the persistor threshold, the less similar they must be (more lenient).
 
 - **Settings Key**: `threshold_prev`
-- **Default Value**: 0.3
-- **Minimum**: 0.01
-- **Maximum**: 0.60
-- **Step**: 0.01
+- **Default Value**: `0.3`
+- **Minimum**: `0.01`
+- **Maximum**: `0.60`
+- **Step**: `0.01`
 
 Persistor threshold should ideally be quite strict as it would be good to ensure that a person detected using this mechanic has a really similar face to one who was detected normally (either by default or differentiator mechanic) previously.
 
@@ -200,10 +202,10 @@ Intersection-over-union score is the fraction of the intersection area between 2
 The higher the IOU threshold, the closer in position the bounding boxes must have with each other. Conversely, the lower the threshold, the further apart they are allowed to be.
 
 - **Settings Key**: `threshold_iou`
-- **Default Value**: 0.2
-- **Minimum**: 0.01
-- **Maximum**: 1.00
-- **Step**: 0.01
+- **Default Value**: `0.20`
+- **Minimum**: `0.01`
+- **Maximum**: `1.00`
+- **Step**: `0.01`
 
 IOU threshold should ideally be quite lenient (low) as even a lenient IOU threshold enforces a degree of similarity in the positions of the bounding boxes. Too strict an IOU threshold would allow for little movment in the faces of the individual with respect to the camera before the persistor mechanic comes into play, defeating its purpose. 
 
@@ -212,10 +214,10 @@ IOU threshold should ideally be quite lenient (low) as even a lenient IOU thresh
 **Lenient Threshold** is similar to [**FR Threshold**](#fr-threshold). In the persistor mechanic, this is used to ensure that a face has at least some semblance to a face in the database. The closest similarity score of a query embedding must thus be below the persistor lenient threshold for it to be recognised.
 
 - **Settings Key**: `threshold_lenient_pers`
-- **Default Value**: 0.60
-- **Minimum**: 0.30
-- **Maximum**: 0.90
-- **Step**: 0.01
+- **Default Value**: `0.60`
+- **Minimum**: `0.30`
+- **Maximum**: `0.90`
+- **Step**: `0.01`
 
 This value should be higher (more lenient) than that of FR threshold and the [differentiator lenient threshold](#lenient-threshold-differentiator).
 
