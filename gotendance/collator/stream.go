@@ -1,6 +1,5 @@
 package collator
 
-
 import (
 	"bufio"
 	"encoding/json"
@@ -116,7 +115,7 @@ func Stream(store *Store, stopChan chan struct{}, resultsUrl string, updateInter
 
 	resp, err := http.Get(resultsUrl)
 	if err != nil {
-		log.Printf("Failed to make request: %w", err)
+		log.Printf("Failed to make request: %v", err)
 	}
 	defer resp.Body.Close()
 
@@ -138,14 +137,14 @@ func Stream(store *Store, stopChan chan struct{}, resultsUrl string, updateInter
 		default:
 			line, err := reader.ReadBytes('\n')
 			if err != nil {
-				log.Printf("Stream ended or error occured: %w", err)
+				log.Printf("Stream ended or error occured: %v", err)
 				break
 			}
 
 			var result Result
 			err = json.Unmarshal(line, &result) 
 			if err != nil {
-				log.Printf("Error unmarshaling JSON: %w", err)
+				log.Printf("Error unmarshaling JSON: %v", err)
 				continue
 			}
 

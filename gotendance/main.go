@@ -2,13 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
-	
+
 	"gotendance/collator"
 )
 
@@ -128,7 +128,7 @@ func fetchHandler(store *collator.Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		jsonData, err := store.JsonOut() 
 		if err != nil {
-			log.Printf("Error marshaling to JSON: %w", err)
+			log.Printf("Error marshaling to JSON: %v", err)
 			http.Error(w, "Error marshaling to JSON", http.StatusInternalServerError)
 			return
 		}

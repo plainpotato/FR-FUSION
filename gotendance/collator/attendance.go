@@ -1,6 +1,5 @@
 package collator
 
-
 import (
 	"encoding/json"
 	"log"
@@ -111,12 +110,12 @@ func (store *Store) JsonOut() ([]byte, error) {
 func (store *Store) JsonSave(filename string) {
 	jsonData, err := store.JsonOut() 
 	if err != nil {
-		log.Printf("Error marshaling to JSON: %w", err)
+		log.Printf("Error marshaling to JSON: %v", err)
 	}
 
 	err = os.WriteFile(filename, jsonData, 0644) 
 	if err != nil {
-		log.Printf("Error writing to file: %w", err)
+		log.Printf("Error writing to file: %v", err)
 	}
 }
 
@@ -143,7 +142,7 @@ func (store *Store) LoadPrevOutput(filename string) {
 		if os.IsNotExist(err) {
 			log.Printf("File %s does not exists.", filename)
 		} else {
-			log.Printf("Error opening file: %w", err)
+			log.Printf("Error opening file: %v", err)
 		}
 		return
 	} 
@@ -156,7 +155,7 @@ func (store *Store) LoadPrevOutput(filename string) {
 	defer store.mu.Unlock()
 
 	if err := decoder.Decode(&store.Items); err != nil {
-		log.Printf("Error decoding JSON: %w", err)
+		log.Printf("Error decoding JSON: %v", err)
 		return
 	}
 
