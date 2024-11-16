@@ -42,16 +42,16 @@ As compared to the previous iterations, **Real-time FRS 2.0** has the following 
 ## Installation
 
 For more information on installation, refer to the following:
-- [simpliFRy]()
-- [gotendance]()
+- [simpliFRy](./simplifry/ReadME.md#installation)
+- [gotendance](./gotendance/ReadME.md#installation)
 
 ---
 
 ## Usage
 
 For more information on installation, refer to the following:
-- [simpliFRy]()
-- [gotendance]()
+- [simpliFRy](./simpliFRy/ReadME.md#usage)
+- [gotendance](./gotendance/ReadME.md#usage)
 
 ---
 
