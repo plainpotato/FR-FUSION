@@ -18,7 +18,7 @@
 
 ## Description
 
-Real-time FRS 2.0 is a system with the capability to conduct facial recognition in real-time. Uses include attendance taking and showcase purposes.
+Real-time FRS 2.0 is an app with the capability to conduct facial recognition in real-time. Uses include attendance taking and showcase purposes.
 
 The main FRS software can be found in the [simpliFRy](https://github.com/CJBuzz/Real-time-FRS-2.0/tree/main/simpliFRy) directory. **SimpliFRy** is a locally-hosted web application built using python 3.10 and [Flask](https://github.com/pallets/flask). It makes use of the [insightface](https://github.com/deepinsight/insightface) library by deepinsight for face detection and generation of embeddings and the [voyager](https://github.com/spotify/voyager) library by Spotify for K-Nearest Neighbour search.
 
@@ -70,7 +70,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE.md](htt
 I would like to extend my gratitude to the following people and resources:
 - [**Insightface**](https://github.com/deepinsight/insightface): The weights provided by insightface formed the core of this project's Facial Recognition capabilities.
 - [**Voyager**](https://github.com/spotify/voyager): Voyager's vector search provided a quick and efficient way to match the closest embeddings.
-- [[**FFmpeg**](https://www.ffmpeg.org/): SimpliFRy uses FFmpeg to capture the RTSP stream for frame-by-frame analysis.
+- [**FFmpeg**](https://www.ffmpeg.org/): SimpliFRy uses FFmpeg to capture the RTSP stream for frame-by-frame analysis.
 - [**Ruihongc**](https://github.com/ruihongc): Suggesting the use of Spotify's Voyager led to much better faster performance compared to previous methods.
 - [**BabyWaffles**](https://github.com/BabyWaffles): Dockerization of simpliFRy was made possible by his extensive help.
 - [**Tabler Icons**](https://tabler.io/icons): Multiple icons from Tabler were used in the UI of both simpliFRy and gotendance
