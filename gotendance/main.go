@@ -157,6 +157,18 @@ func changeAttendanceHandler(store *collator.Store) http.HandlerFunc {
 }
 
 
+func getCountHandler(store *collator.Store) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		response := store.Count()
+		w.Header().Set("Content-Type", "application/json")
+
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			http.Error(w, "Error encoding JSON response", http.StatusInternalServerError)
+		}
+	}
+}
+
+
 func recordHandler() http.HandlerFunc {
 	return func (w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "templates/records.html")
@@ -207,9 +219,10 @@ func main() {
 
 	http.HandleFunc("/startCollate", startCollateHandler(store, streamsList))
 	http.HandleFunc("/stopCollate", stopCollateHandler(streamsList))
-	http.HandleFunc("/changeAttendance", changeAttendanceHandler(store))
 
+	http.HandleFunc("/changeAttendance", changeAttendanceHandler(store))
 	http.HandleFunc("/fetchAttendance", fetchHandler(store))
+	http.HandleFunc("/getCount", getCountHandler(store))
 	
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/records", enforceGet(recordHandler()))

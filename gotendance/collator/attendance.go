@@ -35,6 +35,13 @@ type JsonStruct struct {
 }
 
 
+type StoreCount struct {
+	Total int `json:"total"`
+	Detected int `json:"detected"`
+	Attended int `json:"attended"`
+}
+
+
 func NewStore() *Store {
 	return &Store{Items: make(map[string]Record)}
 }
@@ -71,6 +78,32 @@ func (store *Store) Mark(name string) {
 		record.Attendance = !record.Attendance
 		store.Items[name] = record
 	} 
+}
+
+
+func (store *Store) Count() (StoreCount){
+	store.mu.Lock()
+	defer store.mu.Unlock()
+
+	detected := 0
+	attended := 0 
+
+	for _, person := range(store.Items) {
+		if person.Detected {
+			detected += 1
+		}
+		if person.Attendance {
+			attended += 1
+		}
+	}
+
+	count := StoreCount{
+		Total: len(store.Items),
+		Detected: detected,
+		Attended: attended,
+	}
+
+	return count
 }
 
 
