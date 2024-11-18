@@ -111,3 +111,20 @@ if __name__ == "__main__":
       "statue": "ok"
     }
     ```
+
+#### 3. Get Detected Count
+
+- **Endpoint**: `/getCount`
+- **Method**: `GET`
+- **Description**: Get total number of individuals in the attendance list, and number of detected and attended individuals. 
+- **Request**: No parameters required
+- **Response**:
+  - Status: `200 OK`
+  - Body:
+    ```js
+    {
+      "total": 10, // total number of individuals in attendance list
+      "detected": 5, // number of individuals sent from the results stream of another service
+      "attended": 5, // number of individuals considered "present" in the /records page
+    }
+    ```
