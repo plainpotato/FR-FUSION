@@ -15,6 +15,8 @@
 
 ## FR Algorithm
 
+![FR Algorithm Diagram](assets/fr_algorithm.jpg)
+
 SimpliFRy's facial recognition algorithm works as follows:
 
 1. A database of face pictures is analysed by the insightface model, their embeddings produced and loaded into the voyager vector index
@@ -54,6 +56,8 @@ The differentiator mechanic does exactly that. Instead of just fetching the clos
 
 In effect, this mechanic allows the FR algorithm to detect faces it otherwise fails to capture if a clear favourite stands out.
 
+![Differentiator Diagram](assets/differentiator.JPG)
+
 #### Modification 2: Persistor
 
 The persistor mechanic came about from this one observation.
@@ -73,6 +77,8 @@ Therefore, the mechanic works as follows:
 1. Upon successful detection of an individual, the his/her query embeddings are updated and maintained in a dictionary for up to the duration of the **_Holding Time_**.
 2. If a query face fails to be detected, its embedding will be compared to those stored in the dictionary. To consider the face as 'detected', it must fulfil 3 conditions: the position of the query face and that of the face in the persistor dictionary must be in roughly the same position (**_IOU Threshold_**) **AND** the similarity, as measured using cosine distance, between query embedding and the embedding in the persistor dictionary (which are previous query embeddings) must below **_Persistor Threshold_** (which is very strict) **AND** the query embedding's similarity score with the corresponding embedding in the database must meet a separate **_Lenient Threshold_** (different from the Lenient Threshold of the differentiator).
 3. Should the query face be detected as a result of the persistor mechanic, its query embedding will be updated in the dictionary and replace the previous query embedding.
+
+![Persistor Diagram](assets/persistor.JPG)
 
 Notes
 
