@@ -11,14 +11,14 @@
 
 .submit-button {
     padding: 0.8em 1.5em;
-    background-color:rgb(47, 79, 79);
+    background-color: rgb(47, 79, 79);
     border-radius: 1em;
     border-width: 0;
     color: var(--color-foreground)
 }
 
 .submit-button:hover {
-    background-color:rgb(35, 65, 65);
+    background-color: rgb(35, 65, 65);
     cursor:pointer;
 }
 
@@ -28,6 +28,20 @@ input {
     border-width: 0;
     background-color: rgb(50,50,50);
     color: var(--color-foreground);
+}
+
+@media (prefers-color-scheme: light) {
+    input {
+        background-color: rgb(240, 240, 240);
+    }
+
+    .submit-button {
+        background-color: rgb(168, 201, 201);
+    }
+
+    .submit-button:hover {
+        background-color: rgb(111, 201, 201);
+    }
 }
 
 .break {

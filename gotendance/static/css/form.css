@@ -31,11 +31,19 @@ input:focus {
     border-width: 0;
 }
 
-/* input:not(:placeholder-shown) {
-    background-color: rgb(50,50,50);
-    color: var(--color-foreground);
-    border-width: 0;
-} */
+@media (prefers-color-scheme: light) {
+    input, input:focus {
+        background-color: rgb(240, 240, 240);
+    }
+
+    .submit-button {
+        background-color: rgb(168, 201, 201);
+    }
+
+    .submit-button:hover {
+        background-color: rgb(111, 201, 201);
+    }
+}
 
 .text-input {
     width: 300px;

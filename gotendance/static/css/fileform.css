@@ -44,3 +44,17 @@ input[type="file"] {
 .icon-tabler-upload {
     color: var(--color-foreground);
 }
+
+@media (prefers-color-scheme: light) {
+    .file-input-label {
+        background-color: rgb(240, 240, 240);
+    }
+
+    .upload-button {
+        background-color: rgb(168, 201, 201);
+    }
+
+    .upload-button:hover {
+        background-color: rgb(111, 201, 201);
+    }
+}
