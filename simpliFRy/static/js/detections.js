@@ -1,15 +1,20 @@
 const setBBoxPos = (bboxEl, bbox, width, height) => {
   //Setting bounding box position
-  const ratiod_height = width*9/16
+  let ratiod_height = height, ratiod_width = width
+  if ((height/width) > (9/16)) {
+    ratiod_height = width * 9/16
+  } else {
+    ratiod_width = height * 16/9
+  }
 
-  org_left = (bbox[0] * width)
+  org_left = (bbox[0] * ratiod_width) + (width - ratiod_width)/2
   org_top = (bbox[1] * ratiod_height) + (height-ratiod_height)/2
-  org_width = ((bbox[2] - bbox[0]) * width)
+  org_width = ((bbox[2] - bbox[0]) * ratiod_width)
   org_height = ((bbox[3] - bbox[1]) * ratiod_height)
 
   bboxEl.style.left = `${Math.max(0, org_left).toFixed(0)}px`;
   bboxEl.style.top = `${Math.max(0, org_top).toFixed(0)}px`;
-  bboxEl.style.width = `${Math.min(org_width, width - org_left).toFixed(0)}px`;
+  bboxEl.style.width = `${Math.min(org_width, ratiod_width - org_left).toFixed(0)}px`;
   bboxEl.style.height = `${Math.min(org_height, ratiod_height - org_top).toFixed(0)}px`;
 };
 
