@@ -31,13 +31,13 @@ input[type="file"] {
 .upload-button {
     padding: 0.5em;
     padding-right: 0.6em;
-    background-color:rgb(47, 79, 79);
+    background-color: rgb(47, 79, 79);
     border-radius: 0em 1em 1em 0em;
     border-width: 0;
 }
 
 .upload-button:hover {
-    background-color:rgb(35, 65, 65);
+    background-color: rgb(35, 65, 65);
     cursor:pointer;
 }
 
