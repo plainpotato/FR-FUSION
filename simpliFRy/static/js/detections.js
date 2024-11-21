@@ -1,5 +1,7 @@
 const setBBoxPos = (bboxEl, bbox, width, height) => {
-  //Setting bounding box position
+  // Setting bounding box position
+  
+  // Calculate video feed's width and height according to aspect ratio
   let ratiod_height = height, ratiod_width = width
   if ((height/width) > (9/16)) {
     ratiod_height = width * 9/16
@@ -7,15 +9,25 @@ const setBBoxPos = (bboxEl, bbox, width, height) => {
     ratiod_width = height * 16/9
   }
 
-  org_left = (bbox[0] * ratiod_width) + (width - ratiod_width)/2
-  org_top = (bbox[1] * ratiod_height) + (height-ratiod_height)/2
-  org_width = ((bbox[2] - bbox[0]) * ratiod_width)
-  org_height = ((bbox[3] - bbox[1]) * ratiod_height)
+  // Calculate position offset
+  const left_offset = (width - ratiod_width)/2
+  const top_offset = (height - ratiod_height)/2
 
-  bboxEl.style.left = `${Math.max(0, org_left).toFixed(0)}px`;
-  bboxEl.style.top = `${Math.max(0, org_top).toFixed(0)}px`;
-  bboxEl.style.width = `${Math.min(org_width, ratiod_width - org_left).toFixed(0)}px`;
-  bboxEl.style.height = `${Math.min(org_height, ratiod_height - org_top).toFixed(0)}px`;
+  // Calculate positioning of bounding box based on video feed's width and height
+  const org_left = (bbox[0] * ratiod_width) 
+  const org_top = (bbox[1] * ratiod_height) 
+  const org_width = ((bbox[2] - bbox[0]) * ratiod_width)
+  const org_height = ((bbox[3] - bbox[1]) * ratiod_height)
+
+  // Calculate bounding box truncation of cases where bounding box is at edges
+  const width_truncate = Math.max(0, -org_left)
+  const height_truncate = Math.max(0, -org_top)
+
+  // Set bounding box position
+  bboxEl.style.left = `${Math.max(left_offset, org_left + left_offset).toFixed(0)}px`;
+  bboxEl.style.top = `${Math.max(top_offset, org_top + top_offset).toFixed(0)}px`;
+  bboxEl.style.width = `${Math.min(org_width - width_truncate, ratiod_width - org_left).toFixed(0)}px`;
+  bboxEl.style.height = `${Math.min(org_height - height_truncate, ratiod_height - org_top).toFixed(0)}px`;
 };
 
 
