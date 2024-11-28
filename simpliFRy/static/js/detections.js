@@ -24,8 +24,8 @@ const setBBoxPos = (bboxEl, bbox, width, height) => {
   const height_truncate = Math.max(0, -org_top)
 
   // Set bounding box position
-  bboxEl.style.left = `${Math.max(left_offset, org_left + left_offset).toFixed(0)}px`;
-  bboxEl.style.top = `${Math.max(top_offset, org_top + top_offset).toFixed(0)}px`;
+  bboxEl.style.left = `${Math.max(left_offset, org_left + left_offset).toFixed(0) - 5}px`;
+  bboxEl.style.top = `${Math.max(top_offset, org_top + top_offset).toFixed(0) - 5}px`;
   bboxEl.style.width = `${Math.min(org_width - width_truncate, ratiod_width - org_left).toFixed(0)}px`;
   bboxEl.style.height = `${Math.min(org_height - height_truncate, ratiod_height - org_top).toFixed(0)}px`;
 };
