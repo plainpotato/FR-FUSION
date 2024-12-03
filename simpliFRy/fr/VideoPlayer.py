@@ -62,6 +62,10 @@ class VideoPlayer:
             "ffmpeg",
             "-rtsp_transport", "tcp", # Force TCP (for testing)
             "-i", stream_src.strip(),
+            "-vsync", "0",
+            "-copyts",
+            "-an",
+            "-sn",
             "-f", "rawvideo",  # Video format is raw video
             "-s", "1280x720",
             "-pix_fmt", "bgr24",  # bgr24 pixel format matches OpenCV default pixels format.
