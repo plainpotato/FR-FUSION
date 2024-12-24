@@ -1,6 +1,6 @@
 # Real-time Facial Recognition 2.0
 
-> This repository contains the source code for the 2nd version of Fusion's real time facial recognition system. It is the successor to [this](https://github.com/CJBuzz/FRS).
+> This repository contains the source code for the 2nd version of the real time facial recognition system. It is the successor to [this](https://github.com/CJBuzz/FRS).
 
 ---
 
