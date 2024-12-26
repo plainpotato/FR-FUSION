@@ -32,12 +32,20 @@ const setBBoxPos = (bboxEl, bbox, width, height) => {
 
 
 let currData = []; // Current detection data
+let streamCheck = false
 
 const detectionList = document.getElementById("detections-list"); // Detection list parent element
+
+const endDetections = () => {
+  // Triggers fetch detection to end
+
+  streamCheck = false
+}
 
 const fetchDetections = () => {
   // Fetch FR detection results
 
+  streamCheck = true
   console.log("FETCHING...")
   let buffer = ''
   let data = []
@@ -71,7 +79,7 @@ const fetchDetections = () => {
         buffer = parts[parts.length - 1]
 
         updateDetections(data)
-        processStream()
+        if (streamCheck) processStream()
         return;
       }
       )

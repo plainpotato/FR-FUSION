@@ -82,5 +82,35 @@ document.getElementById("init").onsubmit = async (event) => {
     })
 }
 
+
+const taskbarPlaceholder = document.querySelector(".taskbar-placeholder")
+const taskbar = document.querySelector(".taskbar")
+
+taskbarPlaceholder.addEventListener("mouseenter", () => {
+    taskbar.classList.add("show")
+})
+
+taskbarPlaceholder.addEventListener("mouseleave", () => {
+    taskbar.classList.remove("show")
+})
+
+document.getElementById("end_stream_button").addEventListener("click", async (event) => {
+    // Handles form submission to end stream
+
+    event.preventDefault()
+
+    fetch('/end', {
+        method: 'POST'
+    }).then(response => response.json()).then(data => {
+        document.getElementById("main-container").style.display = 'none'
+        document.getElementById("video-feed").removeAttribute('data')
+        document.getElementById("init").style.display = 'flex'
+        endDetections()
+    }).catch(error => {
+        console.log(error)
+    })
+})
+
+
 document.getElementById("main-container").style.display = 'none'
 checkAlive()
