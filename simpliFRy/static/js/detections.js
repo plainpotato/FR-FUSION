@@ -40,6 +40,7 @@ const endDetections = () => {
   // Triggers fetch detection to end
 
   streamCheck = false
+  currData = []
 }
 
 const fetchDetections = () => {
