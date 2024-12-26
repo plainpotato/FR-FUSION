@@ -62,6 +62,19 @@ def start():
     response_msg = json.dumps({"stream": True, "message": "Success!"})
     return Response(response_msg, status=200, mimetype='application/json')
 
+@app.route("end", methods=["POST"])
+def end():
+    """API for frontend to end FR"""
+
+    if not test.is_started:
+        response_msg = json.dumps({"stream": False, "message": "Stream not started!"})
+        return Response(response_msg, status=200, mimetype='application/json')
+    
+    test.end_stream()
+
+    response_msg = json.dumps({"stream": True, "message": "Success!"})
+    return Response(response_msg, status=200, mimetype='application/json')
+
 @app.route("/checkAlive") 
 def check_alive():
     """API to check if FR has started"""

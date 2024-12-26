@@ -135,6 +135,13 @@ class VideoPlayer:
         self.streamThread.start()
 
         return None
+    
+    def end_stream(self) -> None:
+        """Ends ffmpeg video stream"""\
+        
+        self.end_event.set()
+        
+        return None
         
     def start_broadcast(self) -> Generator[bytes, any, any]:
         """

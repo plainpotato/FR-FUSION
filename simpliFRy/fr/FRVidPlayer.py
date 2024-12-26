@@ -439,6 +439,9 @@ class FRVidPlayer(VideoPlayer):
                     self.fr_results = results
             except AttributeError:
                 continue
+        else:
+            self._reset_vector_index()
+            self.recent_detections = []
 
     def start_inference(self) -> None:
         """Starts FR inference on ffmpeg video stream in a separate thread"""
