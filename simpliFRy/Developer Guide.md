@@ -94,10 +94,11 @@ Instead, here are a list of API endpoints that frontend services and other backe
 | Endpoint      | Method | Description                              |
 | ------------- | :----: | ---------------------------------------- |
 | `/start`      |  POST  | Start video broadcast and FR inferencing |
+| `/end`        |  POST  | Ends video broadcast and FR inferencing  |
 | `/checkAlive` |  GET   | Check if FR has started                  |
 | `/vidFeed`    |  GET   | Access video feed of camera              |
 | `/frResults`  |  GET   | Access FR Results                        |
-| `/submit`     |  POST  | Change FR [settings](#fr-settings)          |
+| `/submit`     |  POST  | Change FR [settings](#fr-settings)       |
 
 Hopefully, this makes simpliFRy far more versatile as other simple highly-specialised apps can be created to interact with it depending on the requirements of the user. (It is also because it takes too much work to build an app with a lot of customisable features.)
 
@@ -258,7 +259,30 @@ P.S. The exact usefulness of this particular parameter is not fully determined.
     }
     ```
 
-#### 2. Check if FR has started
+#### 2. End FR
+
+- **Endpoint**: `/end`
+- **Method**: `POST`
+- **Description**: End video broadcast and FR inferencing
+- **Request**: No parameters required
+- **Response**:
+  - Status: `200 OK`
+  - Body when stream has started:
+    ```json
+    {
+      "stream": true,
+      "message": "Success!"
+    }
+    ```
+  - Body when stream is not started:
+    ```json
+    {
+      "stream": false,
+      "message": "Stream not started!"
+    }
+    ```
+
+#### 3. Check if FR has started
 
 - **Endpoint**: `/checkAlive`
 - **Method**: `GET`
@@ -269,7 +293,7 @@ P.S. The exact usefulness of this particular parameter is not fully determined.
   - Body if started (string): "Yes"
   - Body if not started (string): "No"
 
-#### 3. Access Video Feed
+#### 4. Access Video Feed
 
 - **Endpoint**: `/vidFeed`
 - **Method**: `GET`
@@ -285,7 +309,7 @@ To access the video stream, create an `<object>` element in HTML, set its `type`
 <object type="image/jpeg" data="/vidFeed"></object>
 ```
 
-#### 4. Access FR Results
+#### 5. Access FR Results
 
 - **Endpoint**: `/frResults`
 - **Method**: `GET`
@@ -314,7 +338,7 @@ To access the video stream, create an `<object>` element in HTML, set its `type`
 
 To parse the data, refer to `static/js/detections.js` in the `processStream` function for an example of how to handle the HTTP streaming response on javascript.
 
-#### 5. Change FR Settings
+#### 6. Change FR Settings
 
 - **Endpoint**: `/submit`
 - **Method**: `POST`
