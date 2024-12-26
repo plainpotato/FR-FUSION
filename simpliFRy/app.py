@@ -36,7 +36,7 @@ CORS(app)
 log_info("Starting FR Session")
 
 test = FRVidPlayer()
-#test.start_stream()
+
 
 @app.route("/start", methods=["POST"])
 def start():
@@ -62,6 +62,7 @@ def start():
     response_msg = json.dumps({"stream": True, "message": "Success!"})
     return Response(response_msg, status=200, mimetype='application/json')
 
+
 @app.route("end", methods=["POST"])
 def end():
     """API for frontend to end FR"""
@@ -74,6 +75,7 @@ def end():
 
     response_msg = json.dumps({"stream": True, "message": "Success!"})
     return Response(response_msg, status=200, mimetype='application/json')
+
 
 @app.route("/checkAlive") 
 def check_alive():
@@ -88,6 +90,7 @@ def check_alive():
         response = "No"
 
     return Response(response, status=200, mimetype='application/json')
+
 
 @app.route("/vidFeed")
 def video_feed():
