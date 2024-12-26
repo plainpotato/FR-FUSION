@@ -35,30 +35,30 @@ CORS(app)
 
 log_info("Starting FR Session")
 
-test = FRVidPlayer()
+fr_instance = FRVidPlayer()
 
 
 @app.route("/start", methods=["POST"])
 def start():
     """API for frontend to start FR"""
 
-    if test.is_started:        
+    if fr_instance.is_started:        
         response_msg = json.dumps({"stream": False, "message": "Stream already started!"})
         return Response(response_msg, status=200, mimetype='application/json')
 
     stream_src = request.form.get("stream_src", None)
     data_file = request.form.get("data_file", None)
 
-    test.start_stream(stream_src)
+    fr_instance.start_stream(stream_src)
 
     try:
-        test.load_embeddings(data_file)
+        fr_instance.load_embeddings(data_file)
     except (ValueError, FileNotFoundError) as err:
-        test.end_event.set()
+        fr_instance.end_event.set()
         response_msg = json.dumps({"stream": False, "message": str(err)})
         return Response(response_msg, status=200, mimetype='application/json')
 
-    test.start_inference()
+    fr_instance.start_inference()
     response_msg = json.dumps({"stream": True, "message": "Success!"})
     return Response(response_msg, status=200, mimetype='application/json')
 
@@ -67,11 +67,11 @@ def start():
 def end():
     """API for frontend to end FR"""
 
-    if not test.is_started:
+    if not fr_instance.is_started:
         response_msg = json.dumps({"stream": False, "message": "Stream not started!"})
         return Response(response_msg, status=200, mimetype='application/json')
     
-    test.end_stream()
+    fr_instance.end_stream()
 
     response_msg = json.dumps({"stream": True, "message": "Success!"})
     return Response(response_msg, status=200, mimetype='application/json')
@@ -82,7 +82,7 @@ def check_alive():
     """API to check if FR has started"""
 
     try:
-        if test.streamThread.is_alive():
+        if fr_instance.streamThread.is_alive():
             response = "Yes"
         else: 
             response = "No"
@@ -97,7 +97,7 @@ def video_feed():
     """Returns a HTTP streaming response of the video feed from FFMPEG"""
 
     return Response(
-        test.start_broadcast(), mimetype="multipart/x-mixed-replace; boundary=frame"
+        fr_instance.start_broadcast(), mimetype="multipart/x-mixed-replace; boundary=frame"
     )
 
 
@@ -106,7 +106,7 @@ def fr_results():
     """Returns a HTTP streaming response of the recently detected names, their scores, and bounding boxes"""
 
     return Response(
-        test.start_detection_broadcast(), mimetype="application/json"
+        fr_instance.start_detection_broadcast(), mimetype="application/json"
     )
 
 
@@ -116,31 +116,31 @@ def submit():
 
     new_settings = {
         "threshold": float(request.form.get(
-            "threshold", test.fr_settings["threshold"]
+            "threshold", fr_instance.fr_settings["threshold"]
         )),
         "holding_time": int(float(
-            request.form.get("holding_time", test.fr_settings["holding_time"]))
+            request.form.get("holding_time", fr_instance.fr_settings["holding_time"]))
         ),
         "use_differentiator": "use_differentiator" in request.form,
         "threshold_lenient_diff": float(request.form.get(
-            "threshold_lenient_diff", test.fr_settings["threshold_lenient_diff"]
+            "threshold_lenient_diff", fr_instance.fr_settings["threshold_lenient_diff"]
         )),
         "similarity_gap": float(request.form.get(
-            "similarity_gap", test.fr_settings["similarity_gap"]
+            "similarity_gap", fr_instance.fr_settings["similarity_gap"]
         )),
         "use_persistor": "use_persistor" in request.form,
         "threshold_prev": float(request.form.get(
-            "threshold_prev", test.fr_settings["threshold_prev"]
+            "threshold_prev", fr_instance.fr_settings["threshold_prev"]
         )),
         "threshold_iou": float(request.form.get(
-            "threshold_iou", test.fr_settings["threshold_iou"]
+            "threshold_iou", fr_instance.fr_settings["threshold_iou"]
         )),
         "threshold_lenient_pers": float(request.form.get(
-            "threshold_lenient_pers", test.fr_settings["threshold_lenient_pers"]
+            "threshold_lenient_pers", fr_instance.fr_settings["threshold_lenient_pers"]
         ))
     }
 
-    test.adjust_values(new_settings)
+    fr_instance.adjust_values(new_settings)
     return redirect(url_for('settings'))
 
 
@@ -157,19 +157,19 @@ def settings():
 
     return render_template(
         "settings.html",
-        threshold=test.fr_settings["threshold"],
-        holding_time=test.fr_settings["holding_time"],
-        use_differentiator=test.fr_settings["use_differentiator"],
-        threshold_lenient_diff=test.fr_settings["threshold_lenient_diff"],
-        similarity_gap=test.fr_settings["similarity_gap"],
-        use_persistor=test.fr_settings["use_persistor"],
-        threshold_prev=test.fr_settings["threshold_prev"],
-        threshold_iou=test.fr_settings["threshold_iou"],
-        threshold_lenient_pers=test.fr_settings["threshold_lenient_pers"],
+        threshold=fr_instance.fr_settings["threshold"],
+        holding_time=fr_instance.fr_settings["holding_time"],
+        use_differentiator=fr_instance.fr_settings["use_differentiator"],
+        threshold_lenient_diff=fr_instance.fr_settings["threshold_lenient_diff"],
+        similarity_gap=fr_instance.fr_settings["similarity_gap"],
+        use_persistor=fr_instance.fr_settings["use_persistor"],
+        threshold_prev=fr_instance.fr_settings["threshold_prev"],
+        threshold_iou=fr_instance.fr_settings["threshold_iou"],
+        threshold_lenient_pers=fr_instance.fr_settings["threshold_lenient_pers"],
     )
 
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGINT, test.cleanup)
+    signal.signal(signal.SIGINT, fr_instance.cleanup)
     app.run(debug=True, host=args.ipaddress, port=args.port, use_reloader=False)
     
