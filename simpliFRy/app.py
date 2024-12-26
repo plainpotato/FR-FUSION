@@ -2,7 +2,7 @@ import argparse
 import json
 import signal
 
-from flask import Flask, Response, stream_with_context, render_template, request, redirect, url_for
+from flask import Flask, Response, render_template, request, redirect, url_for
 from flask_cors import CORS
 
 from fr import FRVidPlayer
@@ -11,16 +11,6 @@ from utils import log_info
 parser = argparse.ArgumentParser(description="Facial Recognition Program")
 
 # Arguments
-# parser.add_argument(
-#     "stream", type=str, help="URL to origin streaming camera feed"
-# )
-parser.add_argument(
-    "-d",
-    "--data",
-    type=str,
-    help="File path to json file containing data",
-    required=False,
-)
 parser.add_argument(
     "-ip",
     "--ipaddress",
