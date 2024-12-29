@@ -41,6 +41,7 @@ const endDetections = () => {
 
   streamCheck = false
   currData = []
+  clearBBoxes()
 }
 
 const fetchDetections = () => {
