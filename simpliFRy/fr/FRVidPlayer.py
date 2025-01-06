@@ -154,10 +154,19 @@ class FRVidPlayer(VideoPlayer):
         for img_name in images:
             img_fp = os.path.join(img_folder_path, img_name)
 
-            img = Image.open(img_fp).convert("RGB")
-            img_arr = np.array(img)
+            try: 
+                img = Image.open(img_fp).convert("RGB")
+                img_arr = np.array(img)
+            except Exception:
+                log_info(f"Error processing {img_name}")
+                continue
 
             faces = self.model.get(img_arr)
+
+            if not len(faces): 
+                log_info(f"{img_name} contains no detectable faces!")
+                continue
+
             embedding_list.append(faces[0].embedding)
 
         if len(embedding_list) == 0:
