@@ -98,8 +98,8 @@ document.getElementById("end_stream_button").addEventListener("click", async (ev
     // Handles form submission to end stream
 
     event.preventDefault()
-    document.getElementById("video-feed").removeAttribute('data')
     endDetections()
+    document.getElementById("video-feed").removeAttribute('data')
 
     fetch('/end', {
         method: 'POST'
