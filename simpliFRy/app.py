@@ -63,7 +63,7 @@ def start():
     return Response(response_msg, status=200, mimetype='application/json')
 
 
-@app.route("end", methods=["POST"])
+@app.route("/end", methods=["POST"])
 def end():
     """API for frontend to end FR"""
 
