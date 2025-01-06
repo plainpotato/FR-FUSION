@@ -8,7 +8,7 @@ const startDisplay = (formEl) => {
     formEl.style.display = 'none'
     const videoFeed = document.getElementById("video-feed"), mainContainer = document.getElementById('main-container')
     mainContainer.style.display = 'flex'
-    videoFeed.data = '/vidFeed'
+    videoFeed.setAttribute('data', '/vidFeed')
     fetchDetections()
 }
 
@@ -98,14 +98,14 @@ document.getElementById("end_stream_button").addEventListener("click", async (ev
     // Handles form submission to end stream
 
     event.preventDefault()
+    document.getElementById("video-feed").removeAttribute('data')
+    endDetections()
 
     fetch('/end', {
         method: 'POST'
-    }).then(response => response.json()).then(data => {
+    }).then(response => response.json()).then(_data => {
         document.getElementById("main-container").style.display = 'none'
-        document.getElementById("video-feed").removeAttribute('data')
         document.getElementById("init").style.display = 'flex'
-        endDetections()
     }).catch(error => {
         console.log(error)
     })
