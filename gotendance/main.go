@@ -126,6 +126,9 @@ func stopCollateHandler(streamsList *collator.StreamsList) http.HandlerFunc {
 
 func fetchHandler(store *collator.Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
+
 		jsonData, err := store.JsonOut() 
 		if err != nil {
 			log.Printf("Error marshaling to JSON: %v", err)
@@ -143,6 +146,9 @@ func fetchHandler(store *collator.Store) http.HandlerFunc {
 
 func changeAttendanceHandler(store *collator.Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST")
+
 		queryParams := r.URL.Query()
 		name := queryParams.Get("name")
 		store.Mark(name)
@@ -159,6 +165,9 @@ func changeAttendanceHandler(store *collator.Store) http.HandlerFunc {
 
 func getCountHandler(store *collator.Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
+
 		response := store.Count()
 		w.Header().Set("Content-Type", "application/json")
 
