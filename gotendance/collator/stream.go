@@ -138,7 +138,7 @@ func Stream(store *Store, stopChan chan struct{}, resultsUrl string, updateInter
 			line, err := reader.ReadBytes('\n')
 			if err != nil {
 				log.Printf("Stream ended or error occured: %v", err)
-				break
+				return
 			}
 
 			var result Result
