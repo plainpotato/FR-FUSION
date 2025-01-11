@@ -35,13 +35,8 @@ class Records {
     }
 
     updateData(data) {
-        console.log("Updating...")
         Object.entries(data).map(([name, details]) => {
             this.data[name].buttonEl.innerHTML = details.attendance ? present : absent
-
-            // if (this.data[name].attendance !== details.attendance) {
-            //     this.data[name].buttonEl.innerHTML = details.attendance ? present : absent
-            // }
         })
     }
 
