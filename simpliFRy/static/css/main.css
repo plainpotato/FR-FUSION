@@ -12,6 +12,12 @@
   }
 }
 
+hr {
+  width: 2px;
+  background-color: #fff;
+  color: #fff;
+}
+
 body {
   height: 100 vh;
   width: 100 vw;
