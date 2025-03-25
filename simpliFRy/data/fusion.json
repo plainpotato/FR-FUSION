@@ -1,0 +1,90 @@
+  {
+    "img_folder_path": "faces",
+    "details": [
+      {
+          "name": "CFC JONATHON CHU",
+          "images": [
+              "jonchu.png"
+          ]
+      },
+      {
+          "name": "ME2 JONATHAN TEO",
+          "images": [
+              "jonathanteo.png"
+          ]
+      },
+      {
+        "name": "ME4 WEI CHIN",
+        "images": [
+            "weichin.png"
+        ]
+    },
+      {
+        "name": "LTA JONAH",
+        "images": [
+            "jonah.png"
+        ]
+      },
+      {
+        "name": "LCP STUART",
+        "images": [
+            "stuart.png"
+        ]
+      },
+      {
+        "name": "LCP ZHUO HONG",
+        "images": [
+            "zhuo hong.png"
+        ]
+      },
+      {
+        "name": "3WO WEN YONG",
+        "images": [
+            "wenyong.png"
+        ]
+      },
+      {
+        "name": "CPT SONNEMAN",
+        "images": [
+            "sonneman.png"
+        ]
+      },
+      {
+        "name": "MAJ AMANDA",
+        "images": [
+            "amanda.png"
+        ]
+      },
+      {
+        "name": "2WO YANG JIA HUI",
+        "images": [
+            "yangjiahui.png"
+        ]
+      },
+      {
+        "name": "3SG ISAAC",
+        "images": [
+            "isaac.png"
+        ]
+      },
+      {
+        "name": "3SG KAZ",
+        "images": [
+            "kaz.png"
+        ]
+      },
+      {
+        "name": "3SG EDWARD",
+        "images": [
+            "edward.png"
+        ]
+      },
+      {
+        "name": "LTA VIDEL",
+        "images": [
+            "videl.png"
+        ]
+      }
+    ]
+  }
+      
