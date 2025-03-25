@@ -1,44 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FR Live</title>
-  <link rel="icon" href="../static/favicon.png" />
-  <link rel="stylesheet" type="text/css" href="../static/css/main.css" />
-  <link rel="stylesheet" type="text/css" href="../static/css/index.css" />
-  <link rel="stylesheet" type="text/css" href="../static/css/form.css" />
-</head>
-
-<body>
-  <h1 class="title">Facial Recognition</h1>
-  <div id="main-container">
-    <div id="video-container">
-      <object id="video-feed" type="image/jpeg">
-        <img src="../static/default.jpg", alt="default video image"/>
-      </object>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FR Live</title>
+    <link rel="icon" href="../static/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="../static/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/index.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/form.css" />
+  </head>
+  <body
+    style="
+      background-image: url(../static/frieren.jpg);
+      background-repeat: no-repeat;
+      background-size: 100%;
+    "
+  >
+    <div class="flex-container-logo">
+      <img src="../static/armylogo.png" />
+      <img src="../static/11logo.png" />
+      <img class="fusion-logo" src="../static/fusionlogo.png" />
     </div>
-    <div class="detection-list-container">
-      <div class="detections" id="detections-list">
+    <div class="flex-container">
+      <h1 class="title">Facial Recognition</h1>
+    </div>
+    <div id="main-container">
+      <div id="video-container">
+        <object id="video-feed" type="image/jpeg">
+          <img src="../static/default.jpg" , alt="default video image" />
+        </object>
+      </div>
+      <div class="detection-list-container">
+        <div class="detections" id="detections-list"></div>
+      </div>
+      <div class="taskbar-placeholder">
+        <div class="taskbar">
+          <button id="end_stream_button">End Stream</button>
+        </div>
       </div>
     </div>
-    <div class="taskbar-placeholder">
-      <div class="taskbar">
-        <button id="end_stream_button">End Stream</button>
-      </div>
-    </div>
-  </div>
-  <form id="init" class="form">
-    <label for="stream_src">Video Stream Source</label>
-    <input type="url" id="stream_src" class='init-input' name="stream_src" required/>
-    <div class="break"></div>
-    <label for="data_file">Path to JSON file</label> <!--Relative to data folder-->
-    <input type="text" id="data_file" class='init-input' name="data_file" /><div class="break"></div>
-    <input type="submit" id="submit-button" class="submit-button" value="Submit" />
-  </form>
-  <script src="../static/js/detections.js"></script>
-  <script src="../static/js/stream.js"></script>
-</body>
-
+    <form id="init" class="form">
+      <label for="stream_src">Video Stream Source</label>
+      <input id="stream_src" class="init-input" name="stream_src" required />
+      <div class="break"></div>
+      <label for="data_file">Path to JSON file</label>
+      <!--Relative to data folder-->
+      <input type="text" id="data_file" class="init-input" name="data_file" />
+      <div class="break"></div>
+      <input
+        type="submit"
+        id="submit-button"
+        class="submit-button"
+        value="Submit"
+      />
+    </form>
+    <script src="../static/js/detections.js"></script>
+    <script src="../static/js/stream.js"></script>
+  </body>
 </html>

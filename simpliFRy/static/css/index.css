@@ -61,15 +61,44 @@
 .detection-list-container {
   display: flex;
   min-width: 20%;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 24px;
 }
 
 .detections {
   padding: 1em;
+  font-size: 24px;
+  font-family: 'Times New Roman', Times, serif;
 }
 
 .detectionEntry {
   text-align: left;
   font-size: larger;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.flex-container-logo {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 100px;
+  width: auto;
+}
+
+.fusion-logo {
+  height: 85px;
+  padding-top: 10px;
+}
+
+.logo {
+  height: 80px;
+  width: auto;
+  margin-right: 20px;
 }
 
 

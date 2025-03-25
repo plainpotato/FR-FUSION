@@ -28,6 +28,11 @@ input {
     border-width: 0;
     background-color: rgb(50,50,50);
     color: var(--color-foreground);
+    opacity: 0.5;
+}
+
+input:hover {
+    opacity: 1;
 }
 
 @media (prefers-color-scheme: light) {

@@ -2,26 +2,22 @@ package main
 
 import (
 	"encoding/json"
+	"gotendance/collator"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
-
-	"gotendance/collator"
 )
 
-
 var recordFilename = "output.json"
-
 
 func generateOKRes() map[string]string {
 	return map[string]string{
 		"status": "ok",
 	}
 }
-
 
 func loadData(store *collator.Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +58,6 @@ func loadData(store *collator.Store) http.HandlerFunc {
 	}
 }
 
-
 func startCollateHandler(store *collator.Store, streamsList *collator.StreamsList) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(500)
@@ -78,7 +73,7 @@ func startCollateHandler(store *collator.Store, streamsList *collator.StreamsLis
 			return
 		}
 
-		updateInterval := time.Duration(floatValue*1000)
+		updateInterval := time.Duration(floatValue * 1000)
 		//log.Printf("%v", updateInterval)
 
 		url := r.FormValue("frUrl")
@@ -105,7 +100,6 @@ func startCollateHandler(store *collator.Store, streamsList *collator.StreamsLis
 	}
 }
 
-
 func stopCollateHandler(streamsList *collator.StreamsList) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		queryParams := r.URL.Query()
@@ -123,13 +117,12 @@ func stopCollateHandler(streamsList *collator.StreamsList) http.HandlerFunc {
 	}
 }
 
-
 func fetchHandler(store *collator.Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET")
 
-		jsonData, err := store.JsonOut() 
+		jsonData, err := store.JsonOut()
 		if err != nil {
 			log.Printf("Error marshaling to JSON: %v", err)
 			http.Error(w, "Error marshaling to JSON", http.StatusInternalServerError)
@@ -142,7 +135,6 @@ func fetchHandler(store *collator.Store) http.HandlerFunc {
 		w.Write(jsonData)
 	}
 }
-
 
 func changeAttendanceHandler(store *collator.Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -162,7 +154,6 @@ func changeAttendanceHandler(store *collator.Store) http.HandlerFunc {
 	}
 }
 
-
 func getCountHandler(store *collator.Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -177,13 +168,11 @@ func getCountHandler(store *collator.Store) http.HandlerFunc {
 	}
 }
 
-
 func recordHandler() http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "templates/records.html")
 	}
 }
-
 
 func homeHandler(streamsList *collator.StreamsList) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -192,7 +181,7 @@ func homeHandler(streamsList *collator.StreamsList) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-	
+
 		streamsListCopy := streamsList.FetchList()
 
 		err = tmpl.Execute(w, streamsListCopy)
@@ -200,8 +189,7 @@ func homeHandler(streamsList *collator.StreamsList) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
-} 
-
+}
 
 // Middlewares
 func enforceGet(next http.HandlerFunc) http.HandlerFunc {
@@ -215,7 +203,6 @@ func enforceGet(next http.HandlerFunc) http.HandlerFunc {
 		next.ServeHTTP(w, r)
 	}
 }
-
 
 func main() {
 	log.Printf("Initialising...\n")
@@ -232,7 +219,7 @@ func main() {
 	http.HandleFunc("/changeAttendance", changeAttendanceHandler(store))
 	http.HandleFunc("/fetchAttendance", fetchHandler(store))
 	http.HandleFunc("/getCount", getCountHandler(store))
-	
+
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/records", enforceGet(recordHandler()))
 	http.HandleFunc("/", enforceGet(homeHandler(streamsList)))
