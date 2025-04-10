@@ -52,3 +52,50 @@ input:hover {
 .break {
     height:1.5em
 }
+
+.hidden {
+    display: none !important;
+}
+
+.seatings {
+    display: grid;
+    grid-template-columns: repeat(3, 160px);
+    grid-template-rows: repeat(2, 160px);
+    gap: 40px 60px;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    max-width: 1000px; /* adjust this to match your video feed width */
+    margin: 0 auto;
+    padding: 40px 0;
+  }
+  
+  .box {
+    width: 160px;
+    height: 160px;
+    color: white;
+    font-size: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Assign colors and positions */
+  .box1 { background-color: blue; grid-column: 1; grid-row: 1; }
+  .box2 { background-color: red; grid-column: 2; grid-row: 1; }
+  .box3 { background-color: green; grid-column: 3; grid-row: 1; }
+  .box4 { background-color: yellow; color: black; grid-column: 1; grid-row: 2; }
+  .box5 { background-color: pink; color: black; grid-column: 3; grid-row: 2; }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+  
+  .animate-pulse {
+    animation: pulse 2s infinite;
+  }

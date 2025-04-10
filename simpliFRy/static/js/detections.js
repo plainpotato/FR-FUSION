@@ -1,21 +1,21 @@
 const setBBoxPos = (bboxEl, bbox, width, height) => {
-  let ratiod_height = height, ratiod_width = width;
+  let ratiod_height = height, ratiod_width = width
   if ((height / width) > (9 / 16)) {
-    ratiod_height = width * 9 / 16;
+    ratiod_height = width * 9 / 16
   } else {
-    ratiod_width = height * 16 / 9;
+    ratiod_width = height * 16 / 9
   }
 
-  const left_offset = (width - ratiod_width) / 2;
-  const top_offset = (height - ratiod_height) / 2;
+  const left_offset = (width - ratiod_width) / 2
+  const top_offset = (height - ratiod_height) / 2
 
-  const org_left = (bbox[0] * ratiod_width);
-  const org_top = (bbox[1] * ratiod_height);
-  const org_width = ((bbox[2] - bbox[0]) * ratiod_width);
-  const org_height = ((bbox[3] - bbox[1]) * ratiod_height);
+  const org_left = (bbox[0] * ratiod_width)
+  const org_top = (bbox[1] * ratiod_height)
+  const org_width = ((bbox[2] - bbox[0]) * ratiod_width)
+  const org_height = ((bbox[3] - bbox[1]) * ratiod_height)
 
-  const width_truncate = Math.max(0, -org_left);
-  const height_truncate = Math.max(0, -org_top);
+  const width_truncate = Math.max(0, -org_left)
+  const height_truncate = Math.max(0, -org_top)
 
   bboxEl.style.left = `${Math.max(left_offset, org_left + left_offset).toFixed(0) - 5}px`;
   bboxEl.style.top = `${Math.max(top_offset, org_top + top_offset).toFixed(0) - 5}px`;
@@ -23,25 +23,43 @@ const setBBoxPos = (bboxEl, bbox, width, height) => {
   bboxEl.style.height = `${Math.min(org_height - height_truncate, ratiod_height - org_top).toFixed(0)}px`;
 };
 
-let currData = [];
+let currData = []; // Current detection data
 let streamCheck = false;
-const detectionList = document.getElementById("detections-list");
-const detectionsMap = new Map();
-let detectionHoldTime = 15000;
 
-fetch('/settings.json')
-  .then(response => response.json())
-  .then(settings => {
-    if (settings.detectionHoldTime) {
-      detectionHoldTime = settings.detectionHoldTime * 1000;
+const detectionList = document.getElementById("detections-list"); // Detection list parent element
+
+const tableBoxes = {
+  T1: document.querySelector(".box1"),
+  T2: document.querySelector(".box2"),
+  T3: document.querySelector(".box3"),
+  T4: document.querySelector(".box4"),
+  T5: document.querySelector(".box5"),
+};
+
+const updateBoxAnimations = (detectedLabels) => {
+  const activeTables = new Set();
+
+  detectedLabels.forEach(label => {
+    const match = label.match(/\(T[1-5]\)/);
+    if (match) {
+      const table = match[0].replace(/[()]/g, '');
+      activeTables.add(table);
     }
-  })
-  .catch(err => console.error('Failed to load settings:', err));
+  });
+
+  Object.keys(tableBoxes).forEach(table => {
+    const box = tableBoxes[table];
+    if (activeTables.has(table)) {
+      box.classList.add("animate-pulse");
+    } else {
+      box.classList.remove("animate-pulse");
+    }
+  });
+};
 
 const endDetections = () => {
   streamCheck = false;
   currData = [];
-  detectionsMap.clear();
   clearBBoxes();
 };
 
@@ -81,21 +99,16 @@ const fetchDetections = () => {
         if (streamCheck) processStream();
         return;
       });
-    };
+    }
     processStream();
   });
 };
 
-const updateDetectionListUI = () => {
-  detectionList.innerHTML = '';
-  [...detectionsMap.entries()]
-    .sort((a, b) => b[1].addedTime - a[1].addedTime)
-    .forEach(([name]) => {
-      const detectionEl = document.createElement("p");
-      detectionEl.innerHTML = name;
-      detectionEl.classList.add("detectionEntry");
-      detectionList.appendChild(detectionEl);
-    });
+const createDetectionEl = (name) => {
+  const detectionEl = document.createElement("p");
+  detectionEl.innerHTML = name;
+  detectionEl.classList.add("detectionEntry");
+  detectionList.appendChild(detectionEl);
 };
 
 const clearBBoxes = () => {
@@ -111,60 +124,48 @@ const clearBBoxes = () => {
 
 const updateDetections = (data) => {
   currData = [];
+
   const videoContainer = clearBBoxes();
-  const currentTime = new Date().getTime();
-  const detectedLabels = new Set();
+  const uniqueLabels = new Set();
 
-  data.forEach((detection) => {
-    if (detection.label !== "Unknown") {
-      detectedLabels.add(detection.label);
-      let record = detectionsMap.get(detection.label);
+  data
+    .sort((a, b) => {
+      if (a.label < b.label) return -1;
+      if (a.label > b.label) return 1;
+      return 0;
+    })
+    .map((detection) => {
+      const unknown = detection.label === "Unknown";
 
-      if (!record) {
-        record = { lastSeen: currentTime, addedTime: currentTime, expireStartTime: null };
-        detectionsMap.set(detection.label, record);
-      } else {
-        record.lastSeen = currentTime;
-        record.expireStartTime = null;
+      if (!unknown && !uniqueLabels.has(detection.label)) {
+        createDetectionEl(detection.label);
+        uniqueLabels.add(detection.label);
       }
-    }
 
-    if (!detection.bbox) return;
+      if (!detection.bbox) return;
 
-    const bboxEl = document.createElement("div");
-    bboxEl.classList.add("bbox");
-    if (detection.label !== "Unknown") {
-      bboxEl.classList.add("bbox-identified");
-    }
-
-    bboxEl.innerHTML = `<p class="bbox-label${detection.label !== "Unknown" ? " bbox-label-identified" : ""}">${detection.label} <span class="bbox-score">${detection.score.toFixed(2)}</span></p>`;
-
-    currData.push(detection.bbox);
-    setBBoxPos(
-      bboxEl,
-      detection.bbox,
-      videoContainer.offsetWidth,
-      videoContainer.offsetHeight
-    );
-    videoContainer.appendChild(bboxEl);
-  });
-
-  detectionsMap.forEach((record, label) => {
-    if (!detectedLabels.has(label)) {
-      if (!record.expireStartTime) {
-        record.expireStartTime = currentTime;
-      } else if (currentTime - record.expireStartTime >= detectionHoldTime) {
-        detectionsMap.delete(label);
+      const bboxEl = document.createElement("div");
+      bboxEl.classList.add("bbox");
+      if (!unknown) {
+        bboxEl.classList.add("bbox-identified");
       }
-    } else {
-      if (record.expireStartTime) {
-        record.addedTime = currentTime; // Move to top only after disappearance and re-detection
-      }
-      record.expireStartTime = null;
-    }
-  });
 
-  updateDetectionListUI();
+      bboxEl.innerHTML = `<p class="bbox-label${unknown ? "" : " bbox-label-identified"
+        }">${detection.label
+        } <span class="bbox-score">${detection.score.toFixed(2)}</span></p>`;
+
+      currData.push(detection.bbox);
+      setBBoxPos(
+        bboxEl,
+        detection.bbox,
+        videoContainer.offsetWidth,
+        videoContainer.offsetHeight
+      );
+      videoContainer.appendChild(bboxEl);
+    });
+
+  const labelsArray = Array.from(uniqueLabels);
+  updateBoxAnimations(labelsArray);
 };
 
 window.addEventListener("resize", () => {
