@@ -2,7 +2,7 @@
     "img_folder_path": "faces",
     "details": [
       {
-          "name": "CFC JONATHON CHU",
+          "name": "CFC JONATHON CHU (T5)",
           "images": [
               "jonchu.png"
           ]
@@ -38,7 +38,7 @@
         ]
       },
       {
-        "name": "3WO WEN YONG",
+        "name": "3WO WEN YONG (T1)",
         "images": [
             "wenyong.png"
         ]
@@ -68,7 +68,7 @@
         ]
       },
       {
-        "name": "3SG KAZ",
+        "name": "3SG KAZ (T3)",
         "images": [
             "kaz.png"
         ]
