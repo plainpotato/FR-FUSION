@@ -5,17 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FR Live</title>
     <link rel="icon" href="../static/favicon.png" />
-    <link rel="stylesheet" type="text/css" href="../static/css/main.css" />
-    <link rel="stylesheet" type="text/css" href="../static/css/index.css" />
-    <link rel="stylesheet" type="text/css" href="../static/css/form.css" />
+    <link rel="stylesheet" href="../static/css/main.css" />
+    <link rel="stylesheet" href="../static/css/index.css" />
+    <link rel="stylesheet" href="../static/css/form.css" />
   </head>
-  <body
-    style="
-      background-image: url(../static/frieren.jpg);
-      background-repeat: no-repeat;
-      background-size: 100%;
-    "
-  >
+  <body class="bg-image" style="background-image: url(../static/frieren.jpg)">
+    <div id="table-menu" style="display: none">
+      <div class="menu-header" id="table-menu-header">
+        <span>Settings</span>
+        <button id="close-menu">×</button>
+      </div>
+      <div class="seating-options">
+        <button id="add-table">Add Table</button>
+        <button id="remove-table">Remove Table</button>
+        <button id="reset-tables">Reset All Tables</button>
+        <div class="lock-toggle">
+          <input type="checkbox" id="lock-tables" />
+          <label for="lock-tables">Lock Tables (Disable Dragging)</label>
+        </div>
+        <div class="menu-option">
+          <label for="toggle-video">
+            <input type="checkbox" id="toggle-video" />
+            Show Video
+          </label>
+        </div>
+      </div>
+    </div>
     <div class="flex-container-logo">
       <img src="../static/armylogo.png" />
       <img src="../static/11logo.png" />
@@ -24,18 +39,12 @@
     <div class="flex-container">
       <h1 class="title">Facial Recognition</h1>
     </div>
+    <div id="seatings-container" class="seatings"></div>
     <div id="main-container">
       <div id="video-container" class="hidden">
         <object id="video-feed" type="image/jpeg">
-          <img src="../static/default.jpg" , alt="default video image" />
+          <img src="../static/default.jpg" alt="default video image" />
         </object>
-      </div>
-      <div id="seatings-container" class="seatings">
-        <div class="box box1">T1</div>
-        <div class="box box2">T2</div>
-        <div class="box box3">T3</div>
-        <div class="box box4">T4</div>
-        <div class="box box5">T5</div>
       </div>
       <div class="detection-list-container">
         <div class="detections" id="detections-list"></div>
@@ -51,7 +60,6 @@
       <input id="stream_src" class="init-input" name="stream_src" required />
       <div class="break"></div>
       <label for="data_file">Path to JSON file</label>
-      <!--Relative to data folder-->
       <input type="text" id="data_file" class="init-input" name="data_file" />
       <div class="break"></div>
       <input

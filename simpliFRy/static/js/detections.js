@@ -1,21 +1,21 @@
 const setBBoxPos = (bboxEl, bbox, width, height) => {
-  let ratiod_height = height, ratiod_width = width
+  let ratiod_height = height, ratiod_width = width;
   if ((height / width) > (9 / 16)) {
-    ratiod_height = width * 9 / 16
+    ratiod_height = width * 9 / 16;
   } else {
-    ratiod_width = height * 16 / 9
+    ratiod_width = height * 16 / 9;
   }
 
-  const left_offset = (width - ratiod_width) / 2
-  const top_offset = (height - ratiod_height) / 2
+  const left_offset = (width - ratiod_width) / 2;
+  const top_offset = (height - ratiod_height) / 2;
 
-  const org_left = (bbox[0] * ratiod_width)
-  const org_top = (bbox[1] * ratiod_height)
-  const org_width = ((bbox[2] - bbox[0]) * ratiod_width)
-  const org_height = ((bbox[3] - bbox[1]) * ratiod_height)
+  const org_left = bbox[0] * ratiod_width;
+  const org_top = bbox[1] * ratiod_height;
+  const org_width = (bbox[2] - bbox[0]) * ratiod_width;
+  const org_height = (bbox[3] - bbox[1]) * ratiod_height;
 
-  const width_truncate = Math.max(0, -org_left)
-  const height_truncate = Math.max(0, -org_top)
+  const width_truncate = Math.max(0, -org_left);
+  const height_truncate = Math.max(0, -org_top);
 
   bboxEl.style.left = `${Math.max(left_offset, org_left + left_offset).toFixed(0) - 5}px`;
   bboxEl.style.top = `${Math.max(top_offset, org_top + top_offset).toFixed(0) - 5}px`;
@@ -23,33 +23,25 @@ const setBBoxPos = (bboxEl, bbox, width, height) => {
   bboxEl.style.height = `${Math.min(org_height - height_truncate, ratiod_height - org_top).toFixed(0)}px`;
 };
 
-let currData = []; // Current detection data
+let currData = [];
 let streamCheck = false;
-
-const detectionList = document.getElementById("detections-list"); // Detection list parent element
-
-const tableBoxes = {
-  T1: document.querySelector(".box1"),
-  T2: document.querySelector(".box2"),
-  T3: document.querySelector(".box3"),
-  T4: document.querySelector(".box4"),
-  T5: document.querySelector(".box5"),
-};
+const detectionList = document.getElementById("detections-list");
 
 const updateBoxAnimations = (detectedLabels) => {
   const activeTables = new Set();
 
   detectedLabels.forEach(label => {
-    const match = label.match(/\(T[1-5]\)/);
+    const match = label.match(/\(T\d+\)/);
     if (match) {
       const table = match[0].replace(/[()]/g, '');
       activeTables.add(table);
     }
   });
 
-  Object.keys(tableBoxes).forEach(table => {
-    const box = tableBoxes[table];
-    if (activeTables.has(table)) {
+  const boxes = document.querySelectorAll("#seatings-container .box");
+  boxes.forEach(box => {
+    const label = box.innerText.trim();
+    if (activeTables.has(label)) {
       box.classList.add("animate-pulse");
     } else {
       box.classList.remove("animate-pulse");
@@ -97,9 +89,8 @@ const fetchDetections = () => {
 
         updateDetections(data);
         if (streamCheck) processStream();
-        return;
       });
-    }
+    };
     processStream();
   });
 };
@@ -118,22 +109,16 @@ const clearBBoxes = () => {
   prevBBoxes.forEach((element) => {
     element.remove();
   });
-
   return videoContainer;
 };
 
 const updateDetections = (data) => {
   currData = [];
-
   const videoContainer = clearBBoxes();
   const uniqueLabels = new Set();
 
   data
-    .sort((a, b) => {
-      if (a.label < b.label) return -1;
-      if (a.label > b.label) return 1;
-      return 0;
-    })
+    .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0))
     .map((detection) => {
       const unknown = detection.label === "Unknown";
 
@@ -150,33 +135,157 @@ const updateDetections = (data) => {
         bboxEl.classList.add("bbox-identified");
       }
 
-      bboxEl.innerHTML = `<p class="bbox-label${unknown ? "" : " bbox-label-identified"
-        }">${detection.label
-        } <span class="bbox-score">${detection.score.toFixed(2)}</span></p>`;
+      bboxEl.innerHTML = `<p class="bbox-label${unknown ? "" : " bbox-label-identified"}">${detection.label} <span class="bbox-score">${detection.score.toFixed(2)}</span></p>`;
 
       currData.push(detection.bbox);
-      setBBoxPos(
-        bboxEl,
-        detection.bbox,
-        videoContainer.offsetWidth,
-        videoContainer.offsetHeight
-      );
+      setBBoxPos(bboxEl, detection.bbox, videoContainer.offsetWidth, videoContainer.offsetHeight);
       videoContainer.appendChild(bboxEl);
     });
 
-  const labelsArray = Array.from(uniqueLabels);
-  updateBoxAnimations(labelsArray);
+  updateBoxAnimations(Array.from(uniqueLabels));
 };
 
 window.addEventListener("resize", () => {
   const videoContainer = document.getElementById("video-container");
   const bboxesEl = videoContainer.querySelectorAll(".bbox");
   bboxesEl.forEach((element, idx) => {
-    setBBoxPos(
-      element,
-      currData[idx],
-      videoContainer.offsetWidth,
-      videoContainer.offsetHeight
-    );
+    setBBoxPos(element, currData[idx], videoContainer.offsetWidth, videoContainer.offsetHeight);
   });
+});
+
+// TABLE MANAGEMENT
+let boxCount = 0;
+
+const loadTablesFromStorage = () => {
+  const savedTables = JSON.parse(localStorage.getItem("tables") || "[]");
+  boxCount = savedTables.length;
+  savedTables.forEach(({ id, x, y, label, color, width, height }) => {
+    const newBox = document.createElement("div");
+    newBox.className = `box ${id}`;
+    newBox.innerText = label;
+    newBox.style.left = `${x}px`;
+    newBox.style.top = `${y}px`;
+    newBox.style.backgroundColor = color;
+    newBox.style.width = `${width}px`;
+    newBox.style.height = `${height}px`;
+    document.getElementById("seatings-container").appendChild(newBox);
+    makeDraggable(newBox);
+  });
+};
+
+const saveTablesToStorage = () => {
+  const boxes = document.querySelectorAll("#seatings-container .box");
+  const tableData = Array.from(boxes).map((box) => {
+    return {
+      id: box.classList[1],
+      label: box.innerText,
+      x: box.offsetLeft,
+      y: box.offsetTop,
+      color: box.style.backgroundColor,
+      width: box.offsetWidth,
+      height: box.offsetHeight,
+    };
+  });
+  localStorage.setItem("tables", JSON.stringify(tableData));
+};
+
+const randomColor = () => {
+  const colors = ["#e6194b", "#3cb44b", "#ffe119", "#4363d8", "#f58231", "#911eb4", "#46f0f0"];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
+
+const makeDraggable = (box) => {
+  if (document.getElementById("lock-tables").checked) return; // Prevent dragging if locked
+
+  box.style.position = "absolute";
+
+  box.addEventListener("mousedown", (e) => {
+    let offsetX = e.clientX - box.offsetLeft;
+    let offsetY = e.clientY - box.offsetTop;
+    box.style.zIndex = 1000;
+
+    const onMouseMove = (e) => {
+      box.style.left = `${e.clientX - offsetX}px`;
+      box.style.top = `${e.clientY - offsetY}px`;
+    };
+
+    const onMouseUp = () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+      saveTablesToStorage();
+    };
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  });
+};
+
+// KEYBOARD SHORTCUT FOR OPENING MENU
+document.addEventListener("keydown", (e) => {
+  if (e.shiftKey && e.altKey && e.code === "Digit0") {
+    const menu = document.getElementById("table-menu");
+    menu.style.display = menu.style.display === "none" ? "block" : "none";
+  }
+});
+
+// Event listener for toggling the lock/unlock functionality
+document.getElementById("lock-tables").addEventListener("change", () => {
+  const boxes = document.querySelectorAll("#seatings-container .box");
+  boxes.forEach((box) => {
+    if (document.getElementById("lock-tables").checked) {
+      box.style.pointerEvents = "none";  // Disable interaction
+    } else {
+      box.style.pointerEvents = "auto";  // Enable interaction
+    }
+  });
+});
+
+document.getElementById("close-menu").addEventListener("click", () => {
+  document.getElementById("table-menu").style.display = "none";
+});
+
+document.getElementById("add-table").addEventListener("click", () => {
+  boxCount += 1;
+  const newBox = document.createElement("div");
+  newBox.className = `box box${boxCount}`;
+  newBox.innerText = `T${boxCount}`;
+  newBox.style.backgroundColor = randomColor();
+  document.getElementById("seatings-container").appendChild(newBox);
+  makeDraggable(newBox);
+  saveTablesToStorage();
+});
+
+document.getElementById("remove-table").addEventListener("click", () => {
+  if (boxCount > 0) {
+    const lastBox = document.querySelector(`.box${boxCount}`);
+    if (lastBox) lastBox.remove();
+    boxCount -= 1;
+    saveTablesToStorage();
+  }
+});
+
+document.getElementById("reset-tables")?.addEventListener("click", () => {
+  document.querySelectorAll("#seatings-container .box").forEach(el => el.remove());
+  boxCount = 0;
+  saveTablesToStorage();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadTablesFromStorage();
+});
+
+// Video container toggle button
+
+const videoContainer = document.getElementById("video-container");
+const toggleVideoCheckbox = document.getElementById("toggle-video");
+
+// Load saved visibility state
+const isVideoVisible = localStorage.getItem("videoVisible") === "true";
+toggleVideoCheckbox.checked = isVideoVisible;
+videoContainer.classList.toggle("hidden", !isVideoVisible);
+
+toggleVideoCheckbox.addEventListener("change", () => {
+  const showVideo = toggleVideoCheckbox.checked;
+  videoContainer.classList.toggle("hidden", !showVideo);
+  localStorage.setItem("videoVisible", showVideo);
 });

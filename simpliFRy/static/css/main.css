@@ -26,6 +26,11 @@ body {
   color: var(--color-foreground);
 }
 
+.bg-image {
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
 .title {
   /* margin-top: 0.75em; */
   text-align: center;
