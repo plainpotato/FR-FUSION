@@ -273,9 +273,9 @@ document.getElementById("reset-tables")?.addEventListener("click", () => {
   saveTablesToStorage();
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadTablesFromStorage();
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//   loadTablesFromStorage();
+// });
 
 // Video container toggle button
 
@@ -330,7 +330,6 @@ window.addEventListener("DOMContentLoaded", () => {
   makeMenuDraggable("table-menu", "table-menu-header"); // ← renamed here
 });
 
-//new code
 // === RIGHT-CLICK COLOR PICKER FOR BOXES ===
 const colorPicker = document.getElementById("box-color-picker");
 
