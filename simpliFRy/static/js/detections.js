@@ -195,11 +195,14 @@ const randomColor = () => {
 };
 
 const makeDraggable = (box) => {
-  if (document.getElementById("lock-tables").checked) return; // Prevent dragging if locked
-
   box.style.position = "absolute";
 
+  // Respect current lock state
+  box.style.pointerEvents = document.getElementById("lock-tables").checked ? "none" : "auto";
+
   box.addEventListener("mousedown", (e) => {
+    if (document.getElementById("lock-tables").checked) return; // Prevent drag if locked
+
     let offsetX = e.clientX - box.offsetLeft;
     let offsetY = e.clientY - box.offsetTop;
     box.style.zIndex = 1000;
@@ -220,6 +223,7 @@ const makeDraggable = (box) => {
   });
 };
 
+
 // KEYBOARD SHORTCUT FOR OPENING MENU
 document.addEventListener("keydown", (e) => {
   if (e.shiftKey && e.altKey && e.code === "Digit0") {
@@ -231,14 +235,13 @@ document.addEventListener("keydown", (e) => {
 // Event listener for toggling the lock/unlock functionality
 document.getElementById("lock-tables").addEventListener("change", () => {
   const boxes = document.querySelectorAll("#seatings-container .box");
+  const locked = document.getElementById("lock-tables").checked;
+
   boxes.forEach((box) => {
-    if (document.getElementById("lock-tables").checked) {
-      box.style.pointerEvents = "none";  // Disable interaction
-    } else {
-      box.style.pointerEvents = "auto";  // Enable interaction
-    }
+    box.style.pointerEvents = locked ? "none" : "auto";
   });
 });
+
 
 document.getElementById("close-menu").addEventListener("click", () => {
   document.getElementById("table-menu").style.display = "none";
@@ -289,3 +292,91 @@ toggleVideoCheckbox.addEventListener("change", () => {
   videoContainer.classList.toggle("hidden", !showVideo);
   localStorage.setItem("videoVisible", showVideo);
 });
+
+// Makes Menu Table Draggable
+
+// Makes Menu Table Draggable
+
+function makeMenuDraggable(menuId, handleId) {
+  const menu = document.getElementById(menuId);
+  const handle = document.getElementById(handleId);
+
+  let offsetX = 0, offsetY = 0, isDragging = false;
+
+  handle.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    offsetX = e.clientX - menu.offsetLeft;
+    offsetY = e.clientY - menu.offsetTop;
+    document.addEventListener("mousemove", moveMenu);
+    document.addEventListener("mouseup", stopDragging);
+  });
+
+  function moveMenu(e) {
+    if (!isDragging) return;
+    menu.style.left = `${e.clientX - offsetX}px`;
+    menu.style.top = `${e.clientY - offsetY}px`;
+  }
+
+  function stopDragging() {
+    isDragging = false;
+    document.removeEventListener("mousemove", moveMenu);
+    document.removeEventListener("mouseup", stopDragging);
+  }
+}
+
+// Initialize the drag after DOM is ready
+window.addEventListener("DOMContentLoaded", () => {
+  loadTablesFromStorage();
+  makeMenuDraggable("table-menu", "table-menu-header"); // ← renamed here
+});
+
+//new code
+// === RIGHT-CLICK COLOR PICKER FOR BOXES ===
+const colorPicker = document.getElementById("box-color-picker");
+
+// Convert RGB (from computed style) to HEX for input color value
+function rgbToHex(rgb) {
+  const result = rgb.match(/\d+/g).map(Number);
+  return (
+    "#" +
+    result
+      .slice(0, 3)
+      .map((x) => x.toString(16).padStart(2, "0"))
+      .join("")
+  );
+}
+
+// Show color picker on right-click of a table box
+document.getElementById("seatings-container").addEventListener("contextmenu", (e) => {
+  const targetBox = e.target.closest(".box");
+  if (!targetBox) return;
+
+  e.preventDefault(); // Prevent default context menu
+
+  // Position color picker near the cursor
+  colorPicker.style.left = `${e.pageX}px`;
+  colorPicker.style.top = `${e.pageY}px`;
+  colorPicker.style.display = "block";
+
+  // Set current box color as the color picker's value
+  const currentColor = rgbToHex(getComputedStyle(targetBox).backgroundColor);
+  colorPicker.value = currentColor;
+
+  // When user picks a new color
+  const applyColor = (event) => {
+    targetBox.style.backgroundColor = event.target.value;
+    saveTablesToStorage();
+    colorPicker.style.display = "none";
+    colorPicker.removeEventListener("input", applyColor);
+  };
+
+  colorPicker.addEventListener("input", applyColor);
+});
+
+// Hide color picker when clicking outside
+document.addEventListener("click", (e) => {
+  if (e.target !== colorPicker) {
+    colorPicker.style.display = "none";
+  }
+});
+
